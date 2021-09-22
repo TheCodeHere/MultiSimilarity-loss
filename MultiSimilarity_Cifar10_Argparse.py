@@ -225,8 +225,8 @@ class ResNet(nn.Module):
         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
         self.linear = nn.Linear(512*block.expansion, output_size)
 
-        self.MultiSim_loss = losses.MultiSimilarityLoss(alpha=2, beta=50, base=base, reducer=reducers.MeanReducer())
-        self.MultiSim_loss_without_reduction = losses.MultiSimilarityLoss(alpha=2, beta=50, base=base, reducer=reducers.DoNothingReducer())
+        self.MultiSim_loss = losses.MultiSimilarityLoss(alpha=2, beta=20, base=base, reducer=reducers.MeanReducer())
+        self.MultiSim_loss_without_reduction = losses.MultiSimilarityLoss(alpha=2, beta=20, base=base, reducer=reducers.DoNothingReducer())
 
     def _make_layer(self, block, planes, num_blocks, stride):
         strides = [stride] + [1]*(num_blocks-1)
@@ -293,17 +293,12 @@ class ResNet(nn.Module):
                 embeddings = self(data)
 
                 losses = self.MultiSim_loss_without_reduction(embeddings, labels)["loss"]["losses"]
-                #print("len losses: ", len(losses))
-                #print("losses: ", losses)
 
                 # Calculate loss
                 loss = torch.mean(losses)
-                #print("loss: ", loss)
 
                 # Calculate accuracy
                 acc = (losses <= 0).sum() * 1.0 / len(losses)
-                #print("acc: ", acc)
-                #input()
 
                 val_loss.append(loss.item())
                 val_acc.append(acc.item())
@@ -373,10 +368,6 @@ def fit(epochs, max_lr, model, train_loader, val_loader, weight_decay=0.0, grad_
         result['lrs'] = lrs
 
         print(f"Epoch [{epoch + 1}/{epochs}], last_lr: {lrs[-1]:.5f}, train_loss: {mean_loss:.4f}, val_loss: {result['val_loss']:.4f}, val_acc: {result['val_acc']:.4f}")
-
-        #print(f"Epoch [{epoch + 1}/{epochs}], last_lr: {lrs[-1]:.5f}, train_loss: {mean_loss:.4f}, val_loss: {result['val_loss']:.4f}")
-
-        #print(f"Epoch [{epoch + 1}/{epochs}], last_lr: {lrs[-1]:.5f}, train_loss: {mean_loss:.4f}")
 
 
 # Parameters

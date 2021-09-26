@@ -25,7 +25,7 @@ from sklearn import metrics
 from pytorch_metric_learning import losses, reducers
 import argparse
 
-parser = argparse.ArgumentParser(description='TripleNetwork - MNIST dataset')
+parser = argparse.ArgumentParser(description='Multi-similarity loss - Cifar10 dataset')
 parser.add_argument('-bs','--batch_size', type=int, metavar='', required=True, help='Batch size')
 parser.add_argument('-eps','--epochs', type=int, metavar='', required=True, help='Number of epochs')
 parser.add_argument('-lr','--learn_rate', type=float, metavar='', required=True, help='Learning rate')
